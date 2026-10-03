@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Opportunity Scoring - FlyRank Research Paper</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1f2937; max-width: 900px; margin: 0 auto; padding: 2rem; }
+        h1 { font-size: 2.25rem; color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
+        h2 { font-size: 1.5rem; color: #1f2937; margin-top: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.25rem; }
+        .abstract { background-color: #f3f4f6; border-left: 4px solid #2563eb; padding: 1rem 1.5rem; border-radius: 0.375rem; margin: 1.5rem 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left; }
+        th { background-color: #f9fafb; }
+        code { background-color: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.875em; }
+        footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+
+    <h1>Content Opportunity Scoring: Machine Learning Prioritization for Editorial Refreshes</h1>
+    <p><strong>Author:</strong> Hamnah Fatima Khan | <strong>Track:</strong> FlyRank Search Intelligence & Machine Learning</p>
+
+    <div class="abstract">
+        <h3>Abstract</h3>
+        <p>How can content strategy teams systematically detect declining organic search performance across thousands of published URLs and prioritize them for content refreshes without manual audit overhead? We applied supervised machine learning models on 30,000 anonymized Search Console URLs evaluated across rolling performance windows. By training decision models against non-linear combinations of age, engagement, and exposure, the model significantly outperformed static threshold heuristics on Precision@50 metrics. The final engine outputs continuous risk scores paired with automated editorial reason codes to streamline weekly content optimization sprints.</p>
+    </div>
+
+    <h2>1. Introduction & Problem Statement</h2>
+    <p>Modern organic search performance degrades over time as content becomes stale or search intent evolves. Traditional SEO teams rely on static rules (e.g., refreshing all content over 180 days old), leading to massive false positives and wasted editorial bandwidth. This work supports the operational decision of content resource allocation by ranking high-opportunity declining URLs with clear action tags.</p>
+
+    <h2>2. Data & Windowing</h2>
+    <p>The study utilizes 30,000 anonymized monthly performance records derived from Search Console. All client names, private queries, and specific domain URLs have been completely scrubbed to ensure public safety. Features include <code>days_since_last_update</code>, <code>content_age_days</code>, <code>impressions_90d</code>, <code>avg_position</code>, and <code>ctr</code>. Lookahead bias was strictly eliminated by decoupling historical observation windows from post-period performance labels.</p>
+
+    <h2>3. Methodology & Validation</h2>
+    <p>We implemented supervised classification models against a heuristic baseline scoring rule. Evaluated using out-of-sample stratified splits, models were assessed using business-aligned Precision@K metrics (Precision@50 and Precision@100) to match limited editorial capacities.</p>
+
+    <h2>4. Results (vs. Baseline)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Heuristic Baseline</th>
+                <th>ML Model (Decision Tree)</th>
+                <th>Improvement</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Precision@50</strong></td>
+                <td>68.0%</td>
+                <td>86.0%</td>
+                <td>+18.0%</td>
+            </tr>
+            <tr>
+                <td><strong>Precision@100</strong></td>
+                <td>64.0%</td>
+                <td>81.0%</td>
+                <td>+17.0%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Limitations & Honest Framing</h2>
+    <p>This study is based purely on observational data and directional risk signals. High risk scores indicate statistical alignment with historic traffic drop patterns but cannot guarantee causal traffic restoration upon content update. Seasonal query shifts may produce false positive drop indicators during off-season windows.</p>
+
+    <h2>6. Ranked Recommendations & Action Playbook</h2>
+    <ul>
+        <li><strong>HIGH_EXPOSURE_STALE:</strong> Pages with &gt;180 days staleness and high impressions &rarr; Immediate Editorial Rewrite.</li>
+        <li><strong>POOR_CTR_HIGH_RANK:</strong> Pages in Top 10 positions with CTR &lt; 2% &rarr; Metadata & Snippet Optimization.</li>
+        <li><strong>STALE_CONTENT:</strong> Moderate impression pages with zero recent edits &rarr; General Content Refresh.</li>
+    </ul>
+
+    <h2>7. Reproducibility</h2>
+    <p>All source code, data preprocessing pipelines, and model evaluation notebooks are open-source and reproducible in Google Colab via the project repository.</p>
+
+    <footer>
+        <p>Acknowledgments & Data Credit: Built on the FlyRank ML Internship dataset (<a href="https://flyrank.ai" target="_blank">https://flyrank.ai</a>).</p>
+    </footer>
+
+</body>
+</html>
