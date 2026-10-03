@@ -3,80 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Opportunity Scoring - FlyRank Research Paper</title>
+    <title>Content Opportunity Scoring — FlyRank ML Research Paper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1f2937; max-width: 900px; margin: 0 auto; padding: 2rem; }
-        h1 { font-size: 2.25rem; color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
-        h2 { font-size: 1.5rem; color: #1f2937; margin-top: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.25rem; }
-        .abstract { background-color: #f3f4f6; border-left: 4px solid #2563eb; padding: 1rem 1.5rem; border-radius: 0.375rem; margin: 1.5rem 0; }
-        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-        th, td { border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left; }
-        th { background-color: #f9fafb; }
-        code { background-color: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.875em; }
-        footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.875rem; }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --bg-card: #ffffff;
+            --bg-offset: #f8fafc;
+            --success: #16a34a;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg-offset);
+            padding: 2.5rem 1rem;
+        }
+
+        .paper-container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 3.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item strong {
+            color: var(--text-main);
+        }
+
+        .abstract {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 1.75rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .abstract h3 {
+            font-size: 1.125rem;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .abstract p {
+            color: #1e3a8a;
+            font-size: 1.025rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin: 2.5rem 0;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.25rem 0;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .metric-delta {
+            font-size: 0.8125rem;
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0 2rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-offset);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+
+        td strong {
+            color: var(--text-main);
+        }
+
+        .playbook-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .playbook-item {
+            background: var(--bg-offset);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .playbook-tag {
+            align-self: flex-start;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            background: var(--text-main);
+            color: #ffffff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .playbook-desc {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-offset);
+            color: var(--primary-dark);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+            border: 1px solid var(--border-color);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem 0.5rem; }
+            .paper-container { padding: 1.5rem; }
+            h1 { font-size: 1.75rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Content Opportunity Scoring: Machine Learning Prioritization for Editorial Refreshes</h1>
-    <p><strong>Author:</strong> Hamnah Fatima Khan | <strong>Track:</strong> FlyRank Search Intelligence & Machine Learning</p>
+    <div class="paper-container">
+        <header>
+            <span class="badge">Research Paper — Track 2</span>
+            <h1>Content Opportunity Scoring: Machine Learning Prioritization for Editorial Refreshes</h1>
+            <div class="meta-info">
+                <div class="meta-item"><strong>Author:</strong> Hamnah Fatima Khan</div>
+                <div class="meta-item"><strong>Program:</strong> FlyRank Search Intelligence & Machine Learning</div>
+                <div class="meta-item"><strong>Date:</strong> October 2026</div>
+            </div>
+        </header>
 
-    <div class="abstract">
-        <h3>Abstract</h3>
-        <p>How can content strategy teams systematically detect declining organic search performance across thousands of published URLs and prioritize them for content refreshes without manual audit overhead? We applied supervised machine learning models on 30,000 anonymized Search Console URLs evaluated across rolling performance windows. By training decision models against non-linear combinations of age, engagement, and exposure, the model significantly outperformed static threshold heuristics on Precision@50 metrics. The final engine outputs continuous risk scores paired with automated editorial reason codes to streamline weekly content optimization sprints.</p>
+        <section class="abstract">
+            <h3>Abstract</h3>
+            <p>How can content strategy teams systematically detect declining organic search performance across thousands of published URLs and prioritize them for content refreshes without manual audit overhead? We applied supervised machine learning models on 30,000 anonymized Search Console URLs evaluated across rolling performance windows. By training decision models against non-linear combinations of age, engagement, and exposure, the model significantly outperformed static threshold heuristics on Precision@50 metrics. The final engine outputs continuous risk scores paired with automated editorial reason codes to streamline weekly content optimization sprints.</p>
+        </section>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Precision @ 50</div>
+                <div class="metric-value">86.0%</div>
+                <div class="metric-delta">↑ +18.0% vs Baseline</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Precision @ 100</div>
+                <div class="metric-value">81.0%</div>
+                <div class="metric-delta">↑ +17.0% vs Baseline</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Evaluation Dataset</div>
+                <div class="metric-value">30,000</div>
+                <div class="metric-label">Search Console URLs</div>
+            </div>
+        </div>
+
+        <section>
+            <h2>1. Introduction & Problem Statement</h2>
+            <p>Modern organic search performance degrades over time as content becomes stale or search intent evolves. Traditional SEO teams rely on static rules (e.g., refreshing all content over 180 days old), leading to massive false positives and wasted editorial bandwidth. This work supports the operational decision of content resource allocation by ranking high-opportunity declining URLs with clear action tags.</p>
+        </section>
+
+        <section>
+            <h2>2. Data & Windowing</h2>
+            <p>The study utilizes 30,000 anonymized monthly performance records derived from Search Console. All client names, private queries, and specific domain URLs have been completely scrubbed to ensure public safety. Features include <code>days_since_last_update</code>, <code>content_age_days</code>, <code>impressions_90d</code>, <code>avg_position</code>, and <code>ctr</code>. Lookahead bias was strictly eliminated by decoupling historical observation windows from post-period performance labels.</p>
+        </section>
+
+        <section>
+            <h2>3. Methodology & Validation</h2>
+            <p>We implemented supervised classification models against a heuristic baseline scoring rule. Evaluated using out-of-sample stratified splits, models were assessed using business-aligned Precision@K metrics (Precision@50 and Precision@100) to match limited editorial capacities.</p>
+        </section>
+
+        <section>
+            <h2>4. Results & Performance Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Heuristic Baseline</th>
+                        <th>ML Model (Decision Tree)</th>
+                        <th>Absolute Improvement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Precision @ 50</strong></td>
+                        <td>68.0%</td>
+                        <td><strong>86.0%</strong></td>
+                        <td><span style="color: var(--success); font-weight: 600;">+18.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Precision @ 100</strong></td>
+                        <td>64.0%</td>
+                        <td><strong>81.0%</strong></td>
+                        <td><span style="color: var(--success); font-weight: 600;">+17.0%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>5. Limitations & Honest Framing</h2>
+            <p>This study is based purely on observational data and directional risk signals. High risk scores indicate statistical alignment with historic traffic drop patterns but cannot guarantee causal traffic restoration upon content update. Seasonal query shifts may produce false positive drop indicators during off-season windows.</p>
+        </section>
+
+        <section>
+            <h2>6. Ranked Recommendations & Action Playbook</h2>
+            <ul class="playbook-list">
+                <li class="playbook-item">
+                    <span class="playbook-tag">HIGH_EXPOSURE_STALE</span>
+                    <div class="playbook-desc">Pages with &gt;180 days staleness and high impressions &rarr; <strong>Immediate Editorial Rewrite</strong>.</div>
+                </li>
+                <li class="playbook-item">
+                    <span class="playbook-tag">POOR_CTR_HIGH_RANK</span>
+                    <div class="playbook-desc">Pages in Top 10 positions with CTR &lt; 2% &rarr; <strong>Metadata & Snippet Optimization</strong>.</div>
+                </li>
+                <li class="playbook-item">
+                    <span class="playbook-tag">STALE_CONTENT</span>
+                    <div class="playbook-desc">Moderate impression pages with zero recent edits &rarr; <strong>General Content Refresh</strong>.</div>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>7. Reproducibility</h2>
+            <p>All source code, data preprocessing pipelines, and model evaluation notebooks are open-source and reproducible in Google Colab via the project repository.</p>
+        </section>
+
+        <footer>
+            <div>Published under FlyRank ML Internship Program</div>
+            <div>Data Credit: <a href="https://flyrank.ai" target="_blank" rel="noopener">FlyRank Search Intelligence</a></div>
+        </footer>
     </div>
-
-    <h2>1. Introduction & Problem Statement</h2>
-    <p>Modern organic search performance degrades over time as content becomes stale or search intent evolves. Traditional SEO teams rely on static rules (e.g., refreshing all content over 180 days old), leading to massive false positives and wasted editorial bandwidth. This work supports the operational decision of content resource allocation by ranking high-opportunity declining URLs with clear action tags.</p>
-
-    <h2>2. Data & Windowing</h2>
-    <p>The study utilizes 30,000 anonymized monthly performance records derived from Search Console. All client names, private queries, and specific domain URLs have been completely scrubbed to ensure public safety. Features include <code>days_since_last_update</code>, <code>content_age_days</code>, <code>impressions_90d</code>, <code>avg_position</code>, and <code>ctr</code>. Lookahead bias was strictly eliminated by decoupling historical observation windows from post-period performance labels.</p>
-
-    <h2>3. Methodology & Validation</h2>
-    <p>We implemented supervised classification models against a heuristic baseline scoring rule. Evaluated using out-of-sample stratified splits, models were assessed using business-aligned Precision@K metrics (Precision@50 and Precision@100) to match limited editorial capacities.</p>
-
-    <h2>4. Results (vs. Baseline)</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Metric</th>
-                <th>Heuristic Baseline</th>
-                <th>ML Model (Decision Tree)</th>
-                <th>Improvement</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Precision@50</strong></td>
-                <td>68.0%</td>
-                <td>86.0%</td>
-                <td>+18.0%</td>
-            </tr>
-            <tr>
-                <td><strong>Precision@100</strong></td>
-                <td>64.0%</td>
-                <td>81.0%</td>
-                <td>+17.0%</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>5. Limitations & Honest Framing</h2>
-    <p>This study is based purely on observational data and directional risk signals. High risk scores indicate statistical alignment with historic traffic drop patterns but cannot guarantee causal traffic restoration upon content update. Seasonal query shifts may produce false positive drop indicators during off-season windows.</p>
-
-    <h2>6. Ranked Recommendations & Action Playbook</h2>
-    <ul>
-        <li><strong>HIGH_EXPOSURE_STALE:</strong> Pages with &gt;180 days staleness and high impressions &rarr; Immediate Editorial Rewrite.</li>
-        <li><strong>POOR_CTR_HIGH_RANK:</strong> Pages in Top 10 positions with CTR &lt; 2% &rarr; Metadata & Snippet Optimization.</li>
-        <li><strong>STALE_CONTENT:</strong> Moderate impression pages with zero recent edits &rarr; General Content Refresh.</li>
-    </ul>
-
-    <h2>7. Reproducibility</h2>
-    <p>All source code, data preprocessing pipelines, and model evaluation notebooks are open-source and reproducible in Google Colab via the project repository.</p>
-
-    <footer>
-        <p>Acknowledgments & Data Credit: Built on the FlyRank ML Internship dataset (<a href="https://flyrank.ai" target="_blank">https://flyrank.ai</a>).</p>
-    </footer>
 
 </body>
 </html>
